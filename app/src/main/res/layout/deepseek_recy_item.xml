@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dimens10">
+
+    <ImageView
+        android:id="@+id/deepseek_recy_item_img"
+        android:layout_width="@dimen/dimens20"
+        android:layout_height="@dimen/dimens20"
+        android:src="@drawable/voice_speed" />
+
+    <TextView
+        android:id="@+id/deepseek_recy_item_left_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dimens10"
+        android:layout_toEndOf="@+id/deepseek_recy_item_img"
+        android:text="语速"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text16sp" />
+
+    <ImageView
+        android:id="@+id/deepseek_recy_item_row"
+        android:layout_width="@dimen/dimens20"
+        android:layout_height="@dimen/dimens20"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/left_row" />
+
+    <TextView
+        android:id="@+id/deepseek_recy_item_right_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/deepseek_recy_item_row"
+        android:textColor="@color/white"
+        android:text="中速"
+        android:textSize="@dimen/text16sp" />
+
+
+</RelativeLayout>

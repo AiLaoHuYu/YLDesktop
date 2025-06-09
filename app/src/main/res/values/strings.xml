@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">YLDesktop</string>
+    <string name="deepseek_welcome">我是 小天，很高兴见到你！</string>
+    <string name="deepseek_fuction">我可以帮你写代码、读文件、写作各种创意内容，请把你的任务交给我吧~</string>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/dimens10"
+    android:layout_marginBottom="@dimen/dimens10"
+    android:layout_marginRight="@dimen/dimens10"
+    android:background="@drawable/all_app_bg">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/all_app_recy"
+        android:overScrollMode="never"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
