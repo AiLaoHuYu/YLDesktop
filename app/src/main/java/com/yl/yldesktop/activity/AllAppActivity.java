@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -82,6 +83,7 @@ public class AllAppActivity extends AppCompatActivity {
             PackageManager packageManager = getPackageManager();
             packageInfos = packageManager.getInstalledPackages(0);
             for (PackageInfo packageInfo : packageInfos) {
+//                Log.e("TAG123", "appName: " + packageInfo.applicationInfo.loadLabel(getPackageManager()).toString() + ":: packageName: " + packageInfo.packageName);
                 if (packageInfo.packageName.equals("com.yl.deepseekxunfei") || packageInfo.packageName.equals("com.android.settings")
                         || packageInfo.packageName.equals("cn.kuwo.kwmusiccar")) {
                     //得到手机上已经安装的应用的名字,即在AndriodMainfest.xml中的app_name。

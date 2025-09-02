@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaMetadata;
 import android.media.session.MediaController;
 import android.media.session.MediaSessionManager;
@@ -84,6 +85,19 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         attach((MainActivity) activity);
         myHandler = new MyHandler(mActivity.get());
         initData();
+        setMaxVolume();
+    }
+
+    private void setMaxVolume() {
+        AudioManager audioManager = (AudioManager) mActivity.get().getSystemService(Context.AUDIO_SERVICE);
+        if (audioManager != null) {
+            // 恢复默认音量（50%）
+            int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume, 0);
+            audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVolume, 0);
+            audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, maxVolume, 0);
+            audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, maxVolume, 0);
+        }
     }
 
     private void initWeatherSearch() {

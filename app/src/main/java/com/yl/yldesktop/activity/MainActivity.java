@@ -149,6 +149,26 @@ public class MainActivity extends BaseActivity<MainPresenter> {
                 }
             }
         }, intentFilter, ContextCompat.RECEIVER_EXPORTED);
+        BroadcastReceiver gaodeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.e("TAG", "onReceive: " + intent.getAction());
+                if (intent.getAction().equals("AUTONAVI_STANDARD_BROADCAST_SEND")) {
+                    int keyType = intent.getIntExtra("KEY_TYPE", -1);
+                    Log.e("TAG", "gaode: " + keyType);
+                    if (keyType == 10019) {
+                        int extraState = intent.getIntExtra("EXTRA_STATE", -1);
+                        Log.e("TAG", "gaode: " + extraState);
+                        if (extraState == 9) {
+                            aMap.clear();
+                        }
+                    }
+                }
+            }
+        };
+        IntentFilter gaoDeIntentFilter = new IntentFilter();
+        gaoDeIntentFilter.addAction("AUTONAVI_STANDARD_BROADCAST_SEND");
+        registerReceiver(gaodeReceiver, gaoDeIntentFilter);
     }
 
     private void initMap(Bundle savedInstanceState) {
@@ -295,6 +315,12 @@ public class MainActivity extends BaseActivity<MainPresenter> {
             musicLlContent.setVisibility(GONE);
             noMusicTips.setVisibility(VISIBLE);
         } else {
+            Log.e(TAG, "changeMusicUi: title " + isPlaying);
+            if (isPlaying) {
+                musicPlayStop.setImageResource(R.drawable.stop);
+            } else {
+                musicPlayStop.setImageResource(R.drawable.music_play);
+            }
             if (currentMediaModel != null) {
                 if (currentMediaModel.equals(model)) {
                     return false;
@@ -308,11 +334,6 @@ public class MainActivity extends BaseActivity<MainPresenter> {
             }
             if (!TextUtils.isEmpty(currentMediaModel.getArtist())) {
                 musicAuthor.setText(currentMediaModel.getArtist());
-            }
-            if (isPlaying) {
-                musicPlayStop.setImageResource(R.drawable.stop);
-            } else {
-                musicPlayStop.setImageResource(R.drawable.music_play);
             }
             if (currentMediaModel.getAlbumArt() != null) {
 //                Glide.with(this).load(currentMediaModel.getAlbumArt()).override(100,100).into(musicImg);

@@ -10,8 +10,8 @@ android {
         applicationId "com.yl.yldesktop"
         minSdk 24
         targetSdk 35
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
 
     sourceSets {
@@ -49,6 +49,7 @@ dependencies {
     implementation libs.activity
     implementation libs.constraintlayout
     implementation project(':basemvp')
+    implementation project(':YLAppMonitor')
     //Google推荐的EasyPermission库
     implementation libs.easypermissions
     implementation files('libs\\AMap3DMap_10.1.200_AMapNavi_10.1.200_AMapSearch_9.7.4_AMapLocation_6.4.9_20241226.jar')

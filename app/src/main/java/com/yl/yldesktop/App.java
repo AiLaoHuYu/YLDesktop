@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 
 import com.amap.api.location.AMapLocationClient;
+import com.yl.ylappmonitor.APMManager;
 
 public class App extends Application {
 
@@ -17,5 +18,11 @@ public class App extends Application {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.yl.ylleftbar", "com.yl.ylleftbar.service.LeftBarService"));
         startService(intent);
+        initMonitor();
+    }
+
+    private void initMonitor() {
+        APMManager.init(this);
+//        APMManager.getInstance().startMonitoring();
     }
 }
