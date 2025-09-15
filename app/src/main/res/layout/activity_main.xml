@@ -54,6 +54,7 @@
             android:layout_marginEnd="@dimen/dimens40"
             android:background="@drawable/weather_ll_bg"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.14"
             app:layout_constraintTop_toTopOf="parent">
@@ -150,114 +151,17 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/music_ll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dimens10"
-            android:layout_marginEnd="@dimen/dimens40"
-            android:background="@drawable/weather_ll_bg"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.23"
-            app:layout_constraintTop_toBottomOf="@+id/weather_ll">
-
-            <TextView
-                android:id="@+id/no_music_tips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="当前暂无播放器"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text24sp"
-                android:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/music_ll_contenet"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/music_img"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dimens5"
-                    android:layout_marginTop="@dimen/dimens10"
-                    android:layout_marginBottom="@dimen/dimens10"
-                    android:src="@drawable/music" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimens5">
-
-                    <TextView
-                        android:id="@+id/music_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dimens10"
-                        android:text="火火的情郎（DJ何鹏版）"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/text18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/music_author"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/music_title"
-                        android:layout_marginStart="@dimen/dimens10"
-                        android:text="东方红艳、赵真"
-                        android:textColor="@color/grey"
-                        android:textSize="@dimen/text16sp" />
-
-                    <ImageView
-                        android:id="@+id/music_prev"
-                        android:layout_width="@dimen/dimens40"
-                        android:layout_height="@dimen/dimens40"
-                        android:layout_below="@id/music_author"
-                        android:layout_marginTop="@dimen/dimens10"
-                        android:src="@drawable/prev_music" />
-
-                    <ImageView
-                        android:id="@+id/music_play_stop"
-                        android:layout_width="@dimen/dimens40"
-                        android:layout_height="@dimen/dimens40"
-                        android:layout_below="@id/music_author"
-                        android:layout_marginStart="@dimen/dimens50"
-                        android:layout_marginTop="@dimen/dimens10"
-                        android:layout_toEndOf="@id/music_prev"
-                        android:src="@drawable/stop" />
-
-                    <ImageView
-                        android:id="@+id/music_next"
-                        android:layout_width="@dimen/dimens40"
-                        android:layout_height="@dimen/dimens40"
-                        android:layout_below="@id/music_author"
-                        android:layout_marginStart="@dimen/dimens50"
-                        android:layout_marginTop="@dimen/dimens10"
-                        android:layout_toEndOf="@id/music_play_stop"
-                        android:src="@drawable/next_music" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/deepseek_ll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dimens10"
+            android:layout_marginTop="@dimen/dimens15"
             android:layout_marginEnd="@dimen/dimens40"
-            android:background="@drawable/weather_ll_bg"
+            android:background="@drawable/deepseek_ll_bg"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.52"
-            app:layout_constraintTop_toBottomOf="@+id/music_ll">
+            app:layout_constraintHeight_percent="0.94"
+            app:layout_constraintTop_toBottomOf="@+id/weather_ll">
 
             <LinearLayout
                 android:id="@+id/deepseek_ll_content"
@@ -265,73 +169,14 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
-                <LinearLayout
+                <ImageView
+                    android:id="@+id/characterImageView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimens10"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/deepseek_img"
-                        android:layout_width="@dimen/dimens50"
-                        android:layout_height="@dimen/dimens50"
-                        android:layout_marginStart="@dimen/dimens10"
-                        android:src="@drawable/wdxz" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginStart="@dimen/dimens10"
-                            android:text="@string/deepseek_welcome"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text18sp" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="@dimen/dimens10"
-                            android:gravity="center_horizontal"
-                            android:text="@string/deepseek_fuction"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text14sp" />
-
-                    </LinearLayout>
-
-
-                </LinearLayout>
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/deepseek_recy"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_margin="@dimen/dimens10"
-                    android:layout_weight="0.5"
-                    android:overScrollMode="never" />
-
-                <android.widget.Button
-                    android:id="@+id/deepseek_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="@dimen/dimens10"
-                    android:layout_marginEnd="@dimen/dimens10"
-                    android:layout_marginBottom="@dimen/dimens10"
-                    android:layout_weight="0.15"
-                    android:background="@drawable/deepseek_edittext_bg"
-                    android:hint="给小天发送消息"
-                    android:textColor="@color/ivory"
-                    android:textSize="@dimen/text8sp" />
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="centerInside" />
 
             </LinearLayout>
-
 
         </LinearLayout>
 

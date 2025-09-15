@@ -337,29 +337,10 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.deepseek_ll || v.getId() == R.id.deepseek_btn) {
-            try {
-                Intent intent = new Intent("com.yl.deepseek.start");
-                intent.setPackage("com.yl.deepseekxunfei");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                mActivity.get().startActivity(intent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (v.getId() == R.id.music_prev) {
-            inputKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
-            myHandler.postDelayed(this::initMedia, 400);
-        } else if (v.getId() == R.id.music_play_stop) {
-            inputKeyEvent(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
-            isPlaying = !isPlaying;
-            mActivity.get().changeMusicPlayPauseBtn(isPlaying);
-        } else if (v.getId() == R.id.music_next) {
-            inputKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT);
-            myHandler.postDelayed(this::initMedia, 400);
-        } else if (v.getId() == R.id.empty_view) {
+        if (v.getId() == R.id.empty_view) {
             openAmap();
-        } else if (v.getId() == R.id.music_ll_contenet) {
-            openKuwo();
+        } else if (v.getId() == R.id.characterImageView){
+            mActivity.get().setAnimationState(MainActivity.AnimationState.ONECLICK);
         }
     }
 

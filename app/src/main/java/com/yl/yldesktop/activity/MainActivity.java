@@ -9,9 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.hardware.usb.UsbDeviceConnection;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,10 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.amap.api.location.AMapLocationClient;
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
@@ -38,10 +35,9 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.weather.LocalWeatherLive;
-import com.bumptech.glide.Glide;
 import com.yl.basemvp.BaseActivity;
 import com.yl.yldesktop.R;
-import com.yl.yldesktop.adapter.DeepSeekRecyAdapter;
+import com.yl.yldesktop.animation.FrameAnimationController;
 import com.yl.yldesktop.model.MediaModel;
 import com.yl.yldesktop.overlay.DrivingRouteOverlay;
 import com.yl.yldesktop.presenter.MainPresenter;
@@ -55,18 +51,20 @@ public class MainActivity extends BaseActivity<MainPresenter> {
     private final String TAG = MainActivity.class.getSimpleName();
     private MapView mapView;
     private AMap aMap;
-    private RecyclerView mDeepSeekRecy;
-    private DeepSeekRecyAdapter mDeepSeekRecyAdapter;
+    //    private RecyclerView mDeepSeekRecy;
     private LinearLayout mDeepseekLl, mDeepseekLlContent;
-    private Button mDeepseekBtn;
+    //    private Button mDeepseekBtn;
     private Button mEmptyView;
-    private ImageView musicPrev, musicPlayStop, musicNext;
-    private TextView musicTitle, musicAuthor, noMusicTips, noWeatherTips, weatherTemperature, todayDate, weatherText, weatherArea, weatherWind;
-    private ImageView musicImg, weatherImg;
-    private LinearLayout musicLlContent;
+    //    private ImageView musicPrev, musicPlayStop, musicNext;
+    private TextView noWeatherTips, weatherTemperature, todayDate, weatherText, weatherArea, weatherWind;
+    private ImageView weatherImg;
+    //    private LinearLayout musicLlContent;
     private RelativeLayout weatherRl;
     private MediaModel currentMediaModel;
     private final String START_NAVIGATION = "com.yl.deepseek.start.navigation";
+    private ImageView characterImageView;
+    private FrameAnimationController idleAnimation, oneClickAnimation, talkingAnimation, thinkingAnimation;
+    private FrameAnimationController currentAnimation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,18 +95,18 @@ public class MainActivity extends BaseActivity<MainPresenter> {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        mDeepSeekRecy = findViewById(R.id.deepseek_recy);
+//        mDeepSeekRecy = findViewById(R.id.deepseek_recy);
         mDeepseekLl = findViewById(R.id.deepseek_ll);
         mDeepseekLlContent = findViewById(R.id.deepseek_ll_content);
-        mDeepseekBtn = findViewById(R.id.deepseek_btn);
-        musicPrev = findViewById(R.id.music_prev);
-        musicPlayStop = findViewById(R.id.music_play_stop);
-        musicNext = findViewById(R.id.music_next);
-        musicTitle = findViewById(R.id.music_title);
-        musicAuthor = findViewById(R.id.music_author);
-        musicImg = findViewById(R.id.music_img);
-        noMusicTips = findViewById(R.id.no_music_tips);
-        musicLlContent = findViewById(R.id.music_ll_contenet);
+//        mDeepseekBtn = findViewById(R.id.deepseek_btn);
+//        musicPrev = findViewById(R.id.music_prev);
+//        musicPlayStop = findViewById(R.id.music_play_stop);
+//        musicNext = findViewById(R.id.music_next);
+//        musicTitle = findViewById(R.id.music_title);
+//        musicAuthor = findViewById(R.id.music_author);
+//        musicImg = findViewById(R.id.music_img);
+//        noMusicTips = findViewById(R.id.no_music_tips);
+//        musicLlContent = findViewById(R.id.music_ll_contenet);
         noWeatherTips = findViewById(R.id.no_weather_tips);
         weatherTemperature = findViewById(R.id.weather_temperature);
         todayDate = findViewById(R.id.today_date);
@@ -120,19 +118,115 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         mEmptyView = findViewById(R.id.empty_view);
         mEmptyView.bringToFront();
         mEmptyView.setOnClickListener(mPresenter);
-        musicLlContent.setOnClickListener(mPresenter);
-        musicPrev.setOnClickListener(mPresenter);
-        musicPlayStop.setOnClickListener(mPresenter);
-        musicNext.setOnClickListener(mPresenter);
+//        musicLlContent.setOnClickListener(mPresenter);
+//        musicPrev.setOnClickListener(mPresenter);
+//        musicPlayStop.setOnClickListener(mPresenter);
+//        musicNext.setOnClickListener(mPresenter);
         mDeepseekLl.setOnClickListener(mPresenter);
-        mDeepseekBtn.setOnClickListener(mPresenter);
-        mDeepSeekRecyAdapter = new DeepSeekRecyAdapter(this, mPresenter.getDeepseekSettingModels());
-        mDeepSeekRecy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mDeepSeekRecy.setAdapter(mDeepSeekRecyAdapter);
-        mPresenter.initMedia();
+//        mDeepseekBtn.setOnClickListener(mPresenter);
+//        mDeepSeekRecyAdapter = new DeepSeekRecyAdapter(this, mPresenter.getDeepseekSettingModels());
+//        mDeepSeekRecy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//        mDeepSeekRecy.setAdapter(mDeepSeekRecyAdapter);
+//        mPresenter.initMedia();
         mPresenter.checkingAndroidVersion();
         initMap(savedInstanceState);
+        // 初始化视图
+        characterImageView = findViewById(R.id.characterImageView);
+        characterImageView.setOnClickListener(mPresenter);
+        // 初始化动画
+        setupAnimations();
+        setAnimationState(AnimationState.IDLE);
         registerBroadcast();
+    }
+
+    private void setupAnimations() {
+        int[] idleFrames = {R.drawable.idle_1, R.drawable.idle_2, R.drawable.idle_3, R.drawable.idle_4, R.drawable.idle_5, R.drawable.idle_6,
+                R.drawable.idle_7, R.drawable.idle_8, R.drawable.idle_9, R.drawable.idle_10, R.drawable.idle_11, R.drawable.idle_12,
+                R.drawable.idle_13, R.drawable.idle_14, R.drawable.idle_15, R.drawable.idle_16, R.drawable.idle_17, R.drawable.idle_18,
+                R.drawable.idle_19, R.drawable.idle_20, R.drawable.idle_21, R.drawable.idle_22, R.drawable.idle_23, R.drawable.idle_24,
+                R.drawable.idle_25, R.drawable.idle_26, R.drawable.idle_27, R.drawable.idle_28, R.drawable.idle_29, R.drawable.idle_30,
+                R.drawable.idle_31, R.drawable.idle_32, R.drawable.idle_33, R.drawable.idle_34, R.drawable.idle_35, R.drawable.idle_36,
+                R.drawable.idle_37, R.drawable.idle_38, R.drawable.idle_39, R.drawable.idle_40, R.drawable.idle_41, R.drawable.idle_42,
+                R.drawable.idle_43, R.drawable.idle_44, R.drawable.idle_45, R.drawable.idle_46, R.drawable.idle_47, R.drawable.idle_48,
+                R.drawable.idle_49, R.drawable.idle_50, R.drawable.idle_51, R.drawable.idle_52, R.drawable.idle_53, R.drawable.idle_54,
+                R.drawable.idle_55, R.drawable.idle_56
+        };
+        long[] idleDurations = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+                100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+                100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
+        // 创建待机动画
+        idleAnimation = new FrameAnimationController(characterImageView, idleFrames, idleDurations);
+
+        int[] oneClickFrames = {R.drawable.oneclick_1, R.drawable.oneclick_2, R.drawable.oneclick_3, R.drawable.oneclick_4,
+                R.drawable.oneclick_5, R.drawable.oneclick_6, R.drawable.oneclick_7, R.drawable.oneclick_8, R.drawable.oneclick_9,
+                R.drawable.oneclick_10, R.drawable.oneclick_11, R.drawable.oneclick_12, R.drawable.oneclick_13, R.drawable.oneclick_14,
+                R.drawable.oneclick_15, R.drawable.oneclick_16, R.drawable.oneclick_17, R.drawable.oneclick_18, R.drawable.oneclick_19,
+                R.drawable.oneclick_20, R.drawable.oneclick_21, R.drawable.oneclick_22, R.drawable.oneclick_23, R.drawable.oneclick_24,
+                R.drawable.oneclick_25, R.drawable.oneclick_26, R.drawable.oneclick_27, R.drawable.oneclick_28, R.drawable.oneclick_29,
+                R.drawable.oneclick_30, R.drawable.oneclick_31, R.drawable.oneclick_32, R.drawable.oneclick_33, R.drawable.oneclick_34,
+                R.drawable.oneclick_35, R.drawable.oneclick_36, R.drawable.oneclick_37, R.drawable.oneclick_38, R.drawable.oneclick_39,
+                R.drawable.oneclick_40, R.drawable.oneclick_41, R.drawable.oneclick_42, R.drawable.oneclick_43, R.drawable.oneclick_44,
+                R.drawable.oneclick_45, R.drawable.oneclick_46, R.drawable.oneclick_47, R.drawable.oneclick_48, R.drawable.oneclick_49,
+                R.drawable.oneclick_50, R.drawable.oneclick_51, R.drawable.oneclick_52, R.drawable.oneclick_53, R.drawable.oneclick_54,
+                R.drawable.oneclick_55, R.drawable.oneclick_56, R.drawable.oneclick_57, R.drawable.oneclick_58, R.drawable.oneclick_59,
+                R.drawable.oneclick_60, R.drawable.oneclick_61, R.drawable.oneclick_62, R.drawable.oneclick_63, R.drawable.oneclick_64,
+                R.drawable.oneclick_65, R.drawable.oneclick_66, R.drawable.oneclick_67, R.drawable.oneclick_68, R.drawable.oneclick_69,
+                R.drawable.oneclick_70
+        };
+        long[] oneClickDurations = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+                100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,
+                100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100
+        };
+
+        oneClickAnimation = new FrameAnimationController(characterImageView, oneClickFrames, oneClickDurations);
+        oneClickAnimation.setAnimationStateListener(new FrameAnimationController.AnimationStateListener() {
+            @Override
+            public void onFrameChanged(int frame) {
+            }
+
+            @Override
+            public void onAnimationStart() {
+                UsbDeviceConnection
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                setAnimationState(AnimationState.IDLE);
+            }
+        });
+
+    }
+
+    public void setAnimationState(AnimationState state) {
+        // 停止当前动画
+        if (currentAnimation != null && currentAnimation.isRunning()) {
+            currentAnimation.stop();
+        }
+
+        // 根据状态设置新动画
+        switch (state) {
+            case IDLE:
+                idleAnimation.start(true);
+                currentAnimation = idleAnimation;
+                break;
+            case TALKING:
+                talkingAnimation.start(false);
+                currentAnimation = talkingAnimation;
+                break;
+            case THINKING:
+                thinkingAnimation.start(false);
+                currentAnimation = thinkingAnimation;
+                break;
+            case ONECLICK:
+                oneClickAnimation.start(false);
+                currentAnimation = oneClickAnimation;
+                break;
+        }
+    }
+
+    // 动画状态枚举
+    public enum AnimationState {
+        IDLE, TALKING, THINKING, ONECLICK
     }
 
     private void registerBroadcast() {
@@ -225,30 +319,23 @@ public class MainActivity extends BaseActivity<MainPresenter> {
      */
     private void enableImmersiveMode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            );
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         }
     }
 
-    public void refreshDeepseekData() {
-        mPresenter.initData();
-        mDeepSeekRecyAdapter.setDataList(mPresenter.getDeepseekSettingModels());
-        mDeepSeekRecyAdapter.notifyDataSetChanged();
-    }
+//    public void refreshDeepseekData() {
+//        mPresenter.initData();
+//        mDeepSeekRecyAdapter.setDataList(mPresenter.getDeepseekSettingModels());
+//        mDeepSeekRecyAdapter.notifyDataSetChanged();
+//    }
 
-    public void changeMusicPlayPauseBtn(boolean isPlaying) {
-        if (isPlaying) {
-            musicPlayStop.setImageResource(R.drawable.stop);
-        } else {
-            musicPlayStop.setImageResource(R.drawable.music_play);
-        }
-    }
+//    public void changeMusicPlayPauseBtn(boolean isPlaying) {
+//        if (isPlaying) {
+//            musicPlayStop.setImageResource(R.drawable.stop);
+//        } else {
+//            musicPlayStop.setImageResource(R.drawable.music_play);
+//        }
+//    }
 
     public void changeWeatherUi(LocalWeatherLive localWeatherLive) {
         if (localWeatherLive == null) {
@@ -311,34 +398,34 @@ public class MainActivity extends BaseActivity<MainPresenter> {
     }
 
     public boolean changeMusicUi(boolean isShow, boolean isPlaying, MediaModel model) {
-        if (!isShow) {
-            musicLlContent.setVisibility(GONE);
-            noMusicTips.setVisibility(VISIBLE);
-        } else {
-            Log.e(TAG, "changeMusicUi: title " + isPlaying);
-            if (isPlaying) {
-                musicPlayStop.setImageResource(R.drawable.stop);
-            } else {
-                musicPlayStop.setImageResource(R.drawable.music_play);
-            }
-            if (currentMediaModel != null) {
-                if (currentMediaModel.equals(model)) {
-                    return false;
-                }
-            }
-            currentMediaModel = model;
-            musicLlContent.setVisibility(VISIBLE);
-            noMusicTips.setVisibility(GONE);
-            if (!TextUtils.isEmpty(currentMediaModel.getTitle())) {
-                musicTitle.setText(currentMediaModel.getTitle());
-            }
-            if (!TextUtils.isEmpty(currentMediaModel.getArtist())) {
-                musicAuthor.setText(currentMediaModel.getArtist());
-            }
-            if (currentMediaModel.getAlbumArt() != null) {
-//                Glide.with(this).load(currentMediaModel.getAlbumArt()).override(100,100).into(musicImg);
-            }
-        }
+//        if (!isShow) {
+//            musicLlContent.setVisibility(GONE);
+//            noMusicTips.setVisibility(VISIBLE);
+//        } else {
+//            Log.e(TAG, "changeMusicUi: title " + isPlaying);
+//            if (isPlaying) {
+//                musicPlayStop.setImageResource(R.drawable.stop);
+//            } else {
+//                musicPlayStop.setImageResource(R.drawable.music_play);
+//            }
+//            if (currentMediaModel != null) {
+//                if (currentMediaModel.equals(model)) {
+//                    return false;
+//                }
+//            }
+//            currentMediaModel = model;
+//            musicLlContent.setVisibility(VISIBLE);
+//            noMusicTips.setVisibility(GONE);
+//            if (!TextUtils.isEmpty(currentMediaModel.getTitle())) {
+//                musicTitle.setText(currentMediaModel.getTitle());
+//            }
+//            if (!TextUtils.isEmpty(currentMediaModel.getArtist())) {
+//                musicAuthor.setText(currentMediaModel.getArtist());
+//            }
+//            if (currentMediaModel.getAlbumArt() != null) {
+////                Glide.with(this).load(currentMediaModel.getAlbumArt()).override(100,100).into(musicImg);
+//            }
+//        }
         return true;
     }
 
@@ -347,8 +434,8 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         super.onResume();
         Log.e(TAG, "onResume: ");
         mapView.onResume();
-        mPresenter.initMedia();
-        refreshDeepseekData();
+//        mPresenter.initMedia();
+//        refreshDeepseekData();
     }
 
     @Override

@@ -45,4 +45,5 @@
     <dimen name="text10sp">10sp</dimen>
     <dimen name="text8sp">8sp</dimen>
     <dimen name="text32sp">32sp</dimen>
+    <dimen name="dimens15">15dp</dimen>
 </resources>
