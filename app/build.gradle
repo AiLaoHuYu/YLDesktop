@@ -52,6 +52,7 @@ dependencies {
     implementation project(':YLAppMonitor')
     //Google推荐的EasyPermission库
     implementation libs.easypermissions
+    implementation 'androidx.media:media:1.6.0'
     implementation files('libs\\AMap3DMap_10.1.200_AMapNavi_10.1.200_AMapSearch_9.7.4_AMapLocation_6.4.9_20241226.jar')
 //    implementation files('libs\\framework.jar')
     testImplementation libs.junit

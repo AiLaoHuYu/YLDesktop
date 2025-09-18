@@ -213,15 +213,54 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         }
     }
 
+    public void jumpToMusicPlayer() {
+        // 尝试获取音频焦点持有者（此方法可能不总是有效）
+        String focusPackageName = null;
+        MediaSessionManager mediaSessionManager = (MediaSessionManager) mActivity.get().getSystemService(Context.MEDIA_SESSION_SERVICE);
+        List<MediaController> activeControllers = mediaSessionManager.getActiveSessions(null);
+        for (MediaController controller : activeControllers) {
+            PlaybackState playbackState = controller.getPlaybackState();
+            if (playbackState != null && playbackState.getState() == PlaybackState.STATE_PLAYING) {
+                focusPackageName = controller.getPackageName();
+                // 找到正在播放的应用
+                break;
+            }
+        }
+        // 如果获取不到，可以尝试其他方法或使用一个已知的音乐播放器包名列表进行回退
+
+        if (focusPackageName != null && !focusPackageName.isEmpty()) {
+            boolean launchSuccess = launchApp(mActivity.get(), focusPackageName);
+            if (!launchSuccess) {
+                Log.e("TAG", "jumpToMusicPlayer 无法跳转");
+            }
+        } else {
+            openKuwo();
+        }
+    }
+
+    private boolean launchApp(Context context, String packageName) {
+        try {
+            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+            if (launchIntent != null) {
+                context.startActivity(launchIntent);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void openKuwo() {
         // 检查酷我音乐是否安装
         PackageManager packageManager = mActivity.get().getPackageManager();
         try {
-            packageManager.getPackageInfo("cn.kuwo.kwmusiccar", 0);
+            packageManager.getPackageInfo("cn.kuwo.autolite", 0);
 
             // 构建酷我音乐的URI
             Intent intent = new Intent();
-            intent.setComponent(new ComponentName("cn.kuwo.kwmusiccar", "cn.kuwo.kwmusiccar.ui.MainActivity"));
+            intent.setComponent(new ComponentName("cn.kuwo.autolite", "cn.kuwo.autolite.ui.MainActivity"));
             // 启动酷我音乐应用
             mActivity.get().startActivity(intent);
         } catch (PackageManager.NameNotFoundException e) {
@@ -301,14 +340,14 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
 //            Log.e("TAG", "title: " + title + ":: artist: " + artist + ":: isPlaying: " + isPlaying);
         }
         boolean isNeedGo = mActivity.get().changeMusicUi(true, isPlaying, new MediaModel(title, artist, albumArt));
-        if (isNeedGo) {
+//        if (isNeedGo) {
             myHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     initMedia();
                 }
-            }, 100);
-        }
+            }, 1000);
+//        }
     }
 
     @Override
@@ -359,7 +398,7 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         } else if (v.getId() == R.id.empty_view) {
             openAmap();
         } else if (v.getId() == R.id.music_ll_contenet) {
-            openKuwo();
+            jumpToMusicPlayer();
         }
     }
 

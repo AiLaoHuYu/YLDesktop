@@ -51,4 +51,13 @@ public class MediaModel {
     public int hashCode() {
         return Objects.hash(title, artist, albumArt);
     }
+
+    @Override
+    public String toString() {
+        return "MediaModel{" +
+                "title='" + title + '\'' +
+                ", artist='" + artist + '\'' +
+                ", albumArt=" + albumArt +
+                '}';
+    }
 }

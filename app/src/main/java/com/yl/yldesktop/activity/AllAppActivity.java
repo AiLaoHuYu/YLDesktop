@@ -85,9 +85,12 @@ public class AllAppActivity extends AppCompatActivity {
             for (PackageInfo packageInfo : packageInfos) {
 //                Log.e("TAG123", "appName: " + packageInfo.applicationInfo.loadLabel(getPackageManager()).toString() + ":: packageName: " + packageInfo.packageName);
                 if (packageInfo.packageName.equals("com.yl.deepseekxunfei") || packageInfo.packageName.equals("com.android.settings")
-                        || packageInfo.packageName.equals("cn.kuwo.kwmusiccar")) {
+                        || packageInfo.packageName.equals("cn.kuwo.autolite")) {
                     //得到手机上已经安装的应用的名字,即在AndriodMainfest.xml中的app_name。
                     String appName = packageInfo.applicationInfo.loadLabel(getPackageManager()).toString();
+                    if (packageInfo.packageName.equals("cn.kuwo.autolite")) {
+                        appName = "酷我音乐";
+                    }
                     //得到手机上已经安装的应用的图标,即在AndriodMainfest.xml中的icon。
                     Drawable drawable = packageInfo.applicationInfo.loadIcon(getPackageManager());
                     //得到应用所在包的名字,即在AndriodMainfest.xml中的package的值。
