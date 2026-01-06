@@ -42,6 +42,7 @@ import com.bumptech.glide.Glide;
 import com.yl.basemvp.BaseActivity;
 import com.yl.yldesktop.R;
 import com.yl.yldesktop.adapter.DeepSeekRecyAdapter;
+import com.yl.yldesktop.adapter.StockAdapter;
 import com.yl.yldesktop.model.MediaModel;
 import com.yl.yldesktop.overlay.DrivingRouteOverlay;
 import com.yl.yldesktop.presenter.MainPresenter;
@@ -55,7 +56,8 @@ public class MainActivity extends BaseActivity<MainPresenter> {
     private final String TAG = MainActivity.class.getSimpleName();
     private MapView mapView;
     private AMap aMap;
-    private RecyclerView mDeepSeekRecy;
+    private RecyclerView mDeepSeekRecy, mStockRecy;
+    private StockAdapter mStockAdapter;
     private DeepSeekRecyAdapter mDeepSeekRecyAdapter;
     private LinearLayout mDeepseekLl, mDeepseekLlContent;
     private Button mDeepseekBtn;
@@ -98,6 +100,7 @@ public class MainActivity extends BaseActivity<MainPresenter> {
             return insets;
         });
         mDeepSeekRecy = findViewById(R.id.deepseek_recy);
+        mStockRecy = findViewById(R.id.stock_recy);
         mDeepseekLl = findViewById(R.id.deepseek_ll);
         mDeepseekLlContent = findViewById(R.id.deepseek_ll_content);
         mDeepseekBtn = findViewById(R.id.deepseek_btn);
@@ -129,7 +132,10 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         mDeepSeekRecyAdapter = new DeepSeekRecyAdapter(this, mPresenter.getDeepseekSettingModels());
         mDeepSeekRecy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mDeepSeekRecy.setAdapter(mDeepSeekRecyAdapter);
-        mPresenter.initMedia();
+        mStockAdapter = new StockAdapter(this,mPresenter.getStockModels());
+        mStockRecy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        mStockRecy.setAdapter(mStockAdapter);
+//        mPresenter.initMedia();
         mPresenter.checkingAndroidVersion();
         initMap(savedInstanceState);
         registerBroadcast();
@@ -347,7 +353,7 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         super.onResume();
         Log.e(TAG, "onResume: ");
         mapView.onResume();
-        mPresenter.initMedia();
+//        mPresenter.initMedia();
         refreshDeepseekData();
     }
 

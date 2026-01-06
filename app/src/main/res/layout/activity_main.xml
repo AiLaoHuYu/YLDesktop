@@ -246,6 +246,29 @@
 
         </LinearLayout>
 
+
+        <LinearLayout
+            android:id="@+id/stock_ll"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dimens10"
+            android:layout_marginEnd="@dimen/dimens40"
+            android:background="@drawable/weather_ll_bg"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_percent="0.52"
+            app:layout_constraintTop_toBottomOf="@+id/music_ll">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/stock_recy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/dimens10" />
+
+
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/deepseek_ll"
             android:layout_width="match_parent"
@@ -255,6 +278,7 @@
             android:background="@drawable/weather_ll_bg"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent="0.52"
             app:layout_constraintTop_toBottomOf="@+id/music_ll">

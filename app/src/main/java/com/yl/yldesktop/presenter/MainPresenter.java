@@ -2,6 +2,7 @@ package com.yl.yldesktop.presenter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.media.session.PlaybackState;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -51,6 +53,7 @@ import com.yl.yldesktop.activity.MainActivity;
 import com.yl.yldesktop.model.AppInfoModel;
 import com.yl.yldesktop.model.DeepseekSettingModel;
 import com.yl.yldesktop.model.MediaModel;
+import com.yl.yldesktop.model.StockModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -68,6 +71,7 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
 
 
     private List<DeepseekSettingModel> deepseekSettingModels;
+    private List<StockModel> stockModels;
     //请求权限码
     private static final int REQUEST_PERMISSIONS = 9527;
     private AMapLocationClient mlocationClient;
@@ -119,6 +123,11 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         } else {
             deepseekSettingModels.clear();
         }
+        if (stockModels == null) {
+            stockModels = new ArrayList<>();
+        } else {
+            stockModels.clear();
+        }
         String deepseekVoiceSpeed = SystemPropertiesReflection.get("persist.sys.deepseek_voice_speed", "50");
         String deepseekVoicespeaker = SystemPropertiesReflection.get("persist.sys.deepseek_voice_speaker", "小美");
         String deepseekFontSize = SystemPropertiesReflection.get("persist.sys.deepseek_font_size", "中等");
@@ -128,6 +137,10 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         deepseekSettingModels.add(new DeepseekSettingModel("发音人", R.drawable.speaker, deepseekVoicespeaker));
         deepseekSettingModels.add(new DeepseekSettingModel("字体大小", R.drawable.font_size, deepseekFontSize));
         deepseekSettingModels.add(new DeepseekSettingModel("字体颜色", R.drawable.font_color, deepseekFontColor));
+        stockModels.add(new StockModel(R.drawable.apple, "Apple", "(6.71%)", true, "$6,750"));
+        stockModels.add(new StockModel(R.drawable.oracle, "Oracle", "(3.43%)", true, "$4,500"));
+        stockModels.add(new StockModel(R.drawable.tesla, "Tesla", "(1.04%)", false, "$1,120"));
+        stockModels.add(new StockModel(R.drawable.facebook, "Facebook", "(2.44%)", false, "$2,750"));
         try {
             routeSearch = new RouteSearch(mActivity.get());
             routeSearch.setRouteSearchListener(this);
@@ -172,6 +185,11 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         return packageInfos;
     }
 
+    public List<StockModel> getStockModels() {
+        return stockModels;
+    }
+
+
     class MyHandler extends Handler {
 
         private WeakReference<Activity> weakReference;
@@ -212,6 +230,56 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
             e.printStackTrace();
         }
     }
+
+    public void launchAmap(Context context) {
+        try {
+            // 方案1：使用包名启动主Activity
+            Intent intent = context.getPackageManager()
+                    .getLaunchIntentForPackage("com.autonavi.amapauto");
+
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                // 方案2：尝试其他可能的组件
+                launchAmapWithComponent(context);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void launchAmapWithComponent(Context context) {
+        try {
+            // 高德地图可能的Activity路径
+            String[] activities = {
+                    "com.autonavi.map.activity.SplashActivity",
+                    "com.autonavi.minimap.MainActivity",
+                    "com.autonavi.minimap.LaunchActivity",
+                    "com.autonavi.minimap.SplashActivity",
+                    "com.autonavi.minimap.map.HomePageActivity"
+            };
+
+            for (String activity : activities) {
+                try {
+                    Intent intent = new Intent();
+                    intent.setComponent(new ComponentName(
+                            "com.autonavi.minimap",
+                            activity
+                    ));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent);
+                    return;
+                } catch (ActivityNotFoundException e) {
+                    continue;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void jumpToMusicPlayer() {
         // 尝试获取音频焦点持有者（此方法可能不总是有效）
@@ -341,18 +409,19 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
         }
         boolean isNeedGo = mActivity.get().changeMusicUi(true, isPlaying, new MediaModel(title, artist, albumArt));
 //        if (isNeedGo) {
-            myHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    initMedia();
-                }
-            }, 1000);
+        myHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                initMedia();
+            }
+        }, 1000);
 //        }
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        openAmap();
+//        openAmap();
+        launchAmap(mActivity.get());
     }
 
     @Override
@@ -396,7 +465,8 @@ public class MainPresenter extends BasePresenter<MainActivity> implements AMap.O
             inputKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT);
             myHandler.postDelayed(this::initMedia, 400);
         } else if (v.getId() == R.id.empty_view) {
-            openAmap();
+//            openAmap();
+            launchAmap(mActivity.get());
         } else if (v.getId() == R.id.music_ll_contenet) {
             jumpToMusicPlayer();
         }

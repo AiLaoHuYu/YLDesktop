@@ -84,7 +84,7 @@ public class AllAppActivity extends AppCompatActivity {
             packageInfos = packageManager.getInstalledPackages(0);
             for (PackageInfo packageInfo : packageInfos) {
 //                Log.e("TAG123", "appName: " + packageInfo.applicationInfo.loadLabel(getPackageManager()).toString() + ":: packageName: " + packageInfo.packageName);
-                if (packageInfo.packageName.equals("com.yl.deepseekxunfei") || packageInfo.packageName.equals("com.android.settings")
+                if (packageInfo.packageName.equals("com.android.settings")
                         || packageInfo.packageName.equals("cn.kuwo.autolite")) {
                     //得到手机上已经安装的应用的名字,即在AndriodMainfest.xml中的app_name。
                     String appName = packageInfo.applicationInfo.loadLabel(getPackageManager()).toString();
