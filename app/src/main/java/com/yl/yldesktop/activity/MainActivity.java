@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
-import android.hardware.usb.UsbDeviceConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +40,9 @@ import com.yl.yldesktop.animation.FrameAnimationController;
 import com.yl.yldesktop.model.MediaModel;
 import com.yl.yldesktop.overlay.DrivingRouteOverlay;
 import com.yl.yldesktop.presenter.MainPresenter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
@@ -229,6 +231,9 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         IDLE, TALKING, THINKING, ONECLICK
     }
 
+    private String toPoiLongitude = "0";
+    private String toPoiLatitude = "0";
+
     private void registerBroadcast() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(START_NAVIGATION);
@@ -246,16 +251,32 @@ public class MainActivity extends BaseActivity<MainPresenter> {
         BroadcastReceiver gaodeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.e("TAG", "onReceive: " + intent.getAction());
+                Log.e(TAG, "onReceive: " + intent.getAction());
                 if (intent.getAction().equals("AUTONAVI_STANDARD_BROADCAST_SEND")) {
                     int keyType = intent.getIntExtra("KEY_TYPE", -1);
-                    Log.e("TAG", "gaode: " + keyType);
+                    Log.e(TAG, "gaode: " + keyType);
                     if (keyType == 10019) {
                         int extraState = intent.getIntExtra("EXTRA_STATE", -1);
-                        Log.e("TAG", "gaode: " + extraState);
+                        Log.e(TAG, "gaode extraState: " + extraState);
                         if (extraState == 9) {
                             aMap.clear();
+                        } else if (extraState == 8) {
+                            if (!toPoiLatitude.equals("0") || !toPoiLongitude.equals("0")) {
+                                mPresenter.startRouteSearch(new LatLonPoint(Double.parseDouble(toPoiLatitude), Double.parseDouble(toPoiLongitude)));
+                                toPoiLongitude = "0";
+                                toPoiLatitude = "0";
+                            }
                         }
+                    } else if (keyType == 10056) {
+                        try {
+                            String extraRoadInfo = intent.getStringExtra("EXTRA_ROAD_INFO");
+                            JSONObject jsonObject = new JSONObject(extraRoadInfo);
+                            toPoiLongitude = jsonObject.getString("ToPoiLongitude");
+                            toPoiLatitude = jsonObject.getString("ToPoiLatitude");
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
                     }
                 }
             }

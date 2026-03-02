@@ -15,10 +15,21 @@ public class App extends Application {
         AMapLocationClient.setApiKey("e97204b0edc6ffe6a89023f0d6296192");
         AMapLocationClient.updatePrivacyAgree(this, true);
         AMapLocationClient.updatePrivacyShow(this, true, true);
+        startLeftBarService();
+        startAppInstallService();
+        initMonitor();
+    }
+
+    private void startLeftBarService() {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.yl.ylleftbar", "com.yl.ylleftbar.service.LeftBarService"));
         startService(intent);
-        initMonitor();
+    }
+
+    private void startAppInstallService() {
+        Intent appService = new Intent();
+        appService.setComponent(new ComponentName("com.yl.ylappinstall", "com.yl.ylappinstall.AppInstallService"));
+        startService(appService);
     }
 
     private void initMonitor() {
